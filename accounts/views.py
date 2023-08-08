@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
@@ -28,12 +29,15 @@ def registerUser(request):
                 firstName=firstName, lastName=lastName, username=username, email=email, password=password)
             user.role = User.CUSTOMER
             user.save()
+            messages.success(
+                request, 'Your account has been registered succesfully!')
             return redirect('registerUser')
         else:
-            return redirect('registerUser')
+            print('Invalid Form')
+            print(form.errors)
     else:
         form = UserForm()
-        context = {
-            'form': form
-        }
-        return render(request, 'accounts/registerUser.html', context)
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/registerUser.html', context)

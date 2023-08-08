@@ -94,13 +94,12 @@
                       </div>
                     </li>
                     <li>
-                      {% if form.errors %}
-                      <ul>
-                        {% for error in form.errors %}
-                        <li style="color: red">{{ error }}</li>
-                        {% endfor %}
+                      <ul class="errorlist">
+                        {% for field in form %} {% for error in field.errors %}
+                        <li style="color: red">{{error}}</li>
+                        {% endfor %} {% endfor %}
+                        <li style="color: red">{{form.non_field_errors}}</li>
                       </ul>
-                      {% endif %}
                       <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                           <div class="field-holder">
@@ -113,6 +112,11 @@
                               />
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                          {% include 'includes/alerts.html' %}
                         </div>
                       </div>
                     </li>
