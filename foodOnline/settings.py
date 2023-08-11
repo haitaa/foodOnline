@@ -143,3 +143,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MESSAGES_TAGS = {
     messages.ERROR: 'danger',
 }
+
+# Email configuration
+EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_POST = os.environ['EMAIL_POST']
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['MAIL_PASSWORD']
+EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
+DEFAULT_FROM_EMAIL = 'foodOnline Marketplace <mustafahaita355@gmail.com>'
