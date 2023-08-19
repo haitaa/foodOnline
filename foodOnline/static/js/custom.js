@@ -98,6 +98,13 @@ $(document).ready(function(){
                 }else {
                     $('#cart_counter').html(response.cart_counter['cart_count'])
                     $('#qty-'+food_id).html(response.qty)
+
+                    // subtotal, tax and grand total
+                    applyCartAmounts(
+                        subtotal=response.cart_amount['subtotal'],
+                        tax = response.cart_amount['tax'],
+                        grand_total = response.cart_amount['grand_total']
+                    )
                 }
             }
         })
@@ -116,6 +123,7 @@ $(document).ready(function(){
 
         food_id = $(this).attr('data-id')
         url = $(this).attr('data-url')
+        cart_id = $(this).attr('id')
 
         data = {
             food_id: food_id,
@@ -134,8 +142,72 @@ $(document).ready(function(){
                 }else {
                     $('#cart_counter').html(response.cart_counter['cart_count'])
                     $('#qty-'+food_id).html(response.qty)
+                    if(window.location.pathname == '/cart/'){
+                        removeCartItem(response.qty, cart_id)
+                        checkEmptyCart()
+
+                        applyCartAmounts(
+                            subtotal=response.cart_amount['subtotal'],
+                            tax = response.cart_amount['tax'],
+                            grand_total = response.cart_amount['grand_total']
+                        )
+                    }
                 }
             }
         })
     })
+
+    // Delete Cart Item
+    $('.delete_cart').on('click', function(e){
+        e.preventDefault()
+
+        cart_id = $(this).attr('data-id')
+        url = $(this).attr('data-url')
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(response){
+                console.log(response)
+                if(response.status == 'Failed'){
+                    swal(response.message,'', 'error')
+                }else {
+                    $('#cart_counter').html(response.cart_counter['cart_count'])
+                    swal(response.status, response.message, 'success')
+                    removeCartItem(0, cart_id)
+                    checkEmptyCart()
+
+                    applyCartAmounts(
+                        subtotal=response.cart_amount['subtotal'],
+                        tax = response.cart_amount['tax'],
+                        grand_total = response.cart_amount['grand_total']
+                    )
+                }
+            }
+        })
+    })
+
+    // Delete the cart element if the qty is 0
+    function removeCartItem(cartItemQty, cart_id){
+            if(cartItemQty <= 0){
+                // remove the cart item element
+                document.getElementById("cart-item-"+cart_id).remove()
+            }
+    }
+
+    function checkEmptyCart(){
+        var cart_counter = document.getElementById('cart_counter').innerHTML
+        if (cart_counter == 0){
+            document.getElementById('empty-cart').style.display = "block"
+        }
+    }
+
+    // Apply cart amounts
+    function applyCartAmounts(subtotal, tax, grand_total) {
+        if(window.location.pathname == '/cart/') {
+            $('#subtotal').html(subtotal)
+            $('#tax').html(tax)
+            $('#total').html(grand_total)
+        }
+    }
 })
